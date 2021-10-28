@@ -273,7 +273,7 @@ class KnownSystems:
                                  valid_mig_slices=[MIGSlice(1, 5), MIGSlice(2, 10), MIGSlice(3, 20)])
     A100_SXM_80GB = SystemClass("A100-SXM-80GB", ["A100-SXM-80GB"], ["20B2"], Architecture.Ampere, [1, 4, 8],
                                 valid_mig_slices=[MIGSlice(1, 10), MIGSlice(2, 20), MIGSlice(3, 40)])
-    GeForceRTX_3080 = SystemClass("GeForceRTX3080", ["GeForce RTX 3080"], ["2206"], Architecture.Ampere, [1])
+    GeForceRTX_3080 = SystemClass("GeForceRTX3080", ["GeForce RTX 3080", "NVIDIA GeForce RTX 3080 Laptop GPU"], ["2206", "249C"], Architecture.Ampere, [1])
     GeForceRTX_3090 = SystemClass("GeForceRTX3090", ["GeForce RTX 3090", "Quadro RTX A6000", "RTX A6000"],
                                   ["2204", "2230"], Architecture.Ampere, [1])
     A10 = SystemClass("A10", ["A10"], ["2236"], Architecture.Ampere, [1, 8])
