@@ -119,6 +119,15 @@
         "tensor_path": "${PREPROCESSED_DATA_DIR}/coco/val2017/SSDMobileNet/int8_chw4",
         "use_direct_host_access": false
     },
+    "GeForceRTX2080Tix1": {
+        "config_ver": {
+            "maxq": {}
+        },
+        "gpu_single_stream_expected_latency_ns": 400000,
+        "input_format": "chw4",
+        "tensor_path": "${PREPROCESSED_DATA_DIR}/coco/val2017/SSDMobileNet/int8_chw4",
+        "use_direct_host_access": false
+    },
     "benchmark": "ssd-mobilenet",
     "default": {
         "gpu_batch_size": 1,
