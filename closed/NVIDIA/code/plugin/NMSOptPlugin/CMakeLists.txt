@@ -83,6 +83,8 @@ target_compile_features(nmsoptplugin PUBLIC cxx_std_11)
 string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_70,code=sm_70")
 string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_72,code=sm_72")
 string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_75,code=sm_75")
+# Geforce GTX 1080Ti
+string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_61,code=sm_61")
 if(${CUDA_VERSION} VERSION_GREATER_EQUAL 11.0)
 string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_80,code=sm_80")
 endif()
