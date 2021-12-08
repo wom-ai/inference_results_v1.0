@@ -46,8 +46,11 @@ def get_benchmark(conf):
 
         if model_name == 'ssdlite_mobilenet_v2_ball':
             SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet_for_ssdlite_mobilenet_v2_ball").SSDMobileNet
+        elif model_name == 'ssd_mobilenet_v2_coco_2018_03_29':
+            SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet_for_ssd_mobilenet_v2_coco_2018_03_29").SSDMobileNet
         else:
             SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet").SSDMobileNet
+        print("\n##################################################################")
         return SSDMobileNet(conf)
     elif benchmark_name == BENCHMARKS.BERT:
         # TODO now only BERT uses gpu_inference_streams to generate engines
