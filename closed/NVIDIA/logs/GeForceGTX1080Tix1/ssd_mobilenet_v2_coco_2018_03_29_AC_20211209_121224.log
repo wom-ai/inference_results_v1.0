@@ -1,0 +1,98 @@
+[2021-12-09 12:22:33,555 __init__.py:255 INFO] Running command: CUDA_VISIBILE_ORDER=PCI_BUS_ID nvidia-smi --query-gpu=gpu_name,pci.device_id,uuid --format=csv
+[2021-12-09 12:22:33,564 main.py:701 INFO] Detected System ID: GeForceGTX1080Tix1
+[2021-12-09 12:22:33,568 main.py:529 INFO] Using config files: configs/ssd-mobilenet/SingleStream/config.json
+[2021-12-09 12:22:33,568 __init__.py:341 INFO] Parsing config file configs/ssd-mobilenet/SingleStream/config.json ...
+[2021-12-09 12:22:33,568 main.py:542 INFO] Processing config "GeForceGTX1080Tix1_ssd-mobilenet_SingleStream"
+[2021-12-09 12:22:33,568 main.py:224 INFO] Running harness for ssd-mobilenet benchmark in SingleStream scenario...
+[2021-12-09 12:22:33,572 __init__.py:255 INFO] Running command: ./build/bin/harness_default --plugins="build/plugins/NMSOptPlugin/libnmsoptplugin.so" --logfile_outdir="/work/mlperf/inference_results_v1.0/closed/NVIDIA/build/logs/2021.12.09-12.22.33/GeForceGTX1080Tix1_TRT/ssd-mobilenet/SingleStream" --logfile_prefix="mlperf_log_" --performance_sample_count=1024 --test_mode="AccuracyOnly" --gpu_copy_streams=1 --gpu_inference_streams=1 --use_direct_host_access=false --gpu_batch_size=1 --map_path="data_maps/coco/val_map.txt" --tensor_path="${PREPROCESSED_DATA_DIR}/coco/val2017/SSDMobileNet/int8_chw4" --use_graphs=true --single_stream_expected_latency_ns=800000 --gpu_engines="./build/engines/GeForceGTX1080Tix1/ssd-mobilenet/SingleStream/ssd-mobilenet-SingleStream-gpu-b1-int8.default.plan" --mlperf_conf_path="measurements/GeForceGTX1080Tix1_TRT/ssd-mobilenet/SingleStream/mlperf.conf" --user_conf_path="measurements/GeForceGTX1080Tix1_TRT/ssd-mobilenet/SingleStream/user.conf" --max_dlas=0 --scenario SingleStream --model ssd-mobilenet --response_postprocess coco
+[2021-12-09 12:22:33,572 __init__.py:261 INFO] Overriding Environment
+gpu_batch_size : 1
+gpu_copy_streams : 1
+gpu_inference_streams : 1
+input_dtype : int8
+map_path : data_maps/coco/val_map.txt
+precision : int8
+use_graphs : True
+config_ver : default
+gpu_single_stream_expected_latency_ns : 800000
+input_format : chw4
+tensor_path : ${PREPROCESSED_DATA_DIR}/coco/val2017/SSDMobileNet/int8_chw4
+use_direct_host_access : False
+system_id : GeForceGTX1080Tix1
+scenario : SingleStream
+benchmark : ssd-mobilenet
+config_name : GeForceGTX1080Tix1_ssd-mobilenet_SingleStream
+accuracy_level : 99%
+optimization_level : plugin-enabled
+inference_server : lwis
+system_name : None
+test_mode : AccuracyOnly
+gpu_num_bundles : 2
+log_dir : /work/mlperf/inference_results_v1.0/closed/NVIDIA/build/logs/2021.12.09-12.22.33
+&&&& RUNNING Default_Harness # ./build/bin/harness_default
+[I] mlperf.conf path: measurements/GeForceGTX1080Tix1_TRT/ssd-mobilenet/SingleStream/mlperf.conf
+[I] user.conf path: measurements/GeForceGTX1080Tix1_TRT/ssd-mobilenet/SingleStream/user.conf
+Creating QSL.
+Finished Creating QSL.
+Setting up SUT.
+[I] Device:0: ./build/engines/GeForceGTX1080Tix1/ssd-mobilenet/SingleStream/ssd-mobilenet-SingleStream-gpu-b1-int8.default.plan has been successfully loaded.
+[I] Start creating CUDA graphs
+[I] Capture 1 CUDA graphs
+[I] Finish creating CUDA graphs
+[I] Creating batcher thread: 0 EnableBatcherThreadPerDevice: false
+Finished setting up SUT.
+Starting warmup. Running for a minimum of 5 seconds.
+Finished warmup. Ran for 5.0159s.
+Starting running actual test.
+
+No warnings encountered during test.
+
+No errors encountered during test.
+Finished running actual test.
+Device Device:0 processed:
+  5000 batches of size 1
+  Memcpy Calls: 0
+  PerSampleCudaMemcpy Calls: 0
+  BatchedCudaMemcpy Calls: 5000
+&&&& PASSED Default_Harness # ./build/bin/harness_default
+[2021-12-09 12:22:48,770 main.py:280 INFO] Result: Cannot find performance result. Maybe you are running in AccuracyOnly mode.
+[2021-12-09 12:22:48,772 __init__.py:255 INFO] Running command: python3 build/inference/vision/classification_and_detection/tools/accuracy-coco.py --mlperf-accuracy-file /work/mlperf/inference_results_v1.0/closed/NVIDIA/build/logs/2021.12.09-12.22.33/GeForceGTX1080Tix1_TRT/ssd-mobilenet/SingleStream/mlperf_log_accuracy.json             --coco-dir /work/mlperf/inference_results_v1.0/closed/NVIDIA/build/preprocessed_data/coco --output-file build/ssd-mobilenet-results.json
+loading annotations into memory...
+Done (t=0.42s)
+creating index...
+index created!
+Loading and preparing results...
+DONE (t=0.15s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=13.45s).
+Accumulating evaluation results...
+DONE (t=2.22s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.244
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.370
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.270
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.020
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.171
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.565
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.218
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.274
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.275
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.026
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.196
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.636
+mAP=24.365%
+[2021-12-09 12:23:06,622 main.py:573 WARNING] --config_ver=high_accuracy does not exist in config file 'GeForceGTX1080Tix1_ssd-mobilenet_SingleStream'
+
+======================= Perf harness results: =======================
+
+GeForceGTX1080Tix1_TRT-default-SingleStream:
+    ssd-mobilenet: Cannot find performance result. Maybe you are running in AccuracyOnly mode.
+
+
+======================= Accuracy results: =======================
+
+GeForceGTX1080Tix1_TRT-default-SingleStream:
+    ssd-mobilenet: Accuracy = 24.365, Threshold = 21.780. Accuracy test PASSED.
+
