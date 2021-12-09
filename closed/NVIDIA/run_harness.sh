@@ -15,6 +15,8 @@ cp -vf ./build/engines/${DEVICE}/ssd-mobilenet/SingleStream/ssd-mobilenet-${MODE
 make run_harness RUN_ARGS="--benchmarks=ssd-mobilenet --scenarios=SingleStream --config_ver=default,high_accuracy --test_mode=PerformanceOnly" 2>&1 | tee ./logs/${DEVICE}/${MODEL}_B1_${DATETIME}.log
 end=`date +%s`
 runtime=$((end-start))
+echo "Hostname: $(hostname)"
+echo "Hostname: $(hostname)" >> ./logs/${DEVICE}/${MODEL}_B1_${DATETIME}.log
 echo "Elapsed Time: $runtime seconds"
 echo "Elapsed Time: $runtime seconds" >> ./logs/${DEVICE}/${MODEL}_B1_${DATETIME}.log
 
