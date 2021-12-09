@@ -285,6 +285,10 @@ void DetectionOutputOpt<T>::configurePluginBase(const PluginTensorDesc* in, int 
     }
 
     const int numLocClasses = param.shareLocation ? 1 : param.numClasses;
+
+    std::cout << "numPriors: " << numPriors << std::endl;
+    std::cout << "numLocClasses: " << numPriors << std::endl;
+    std::cout << "C1: " << C1 << std::endl;
     ASSERT(numPriors * numLocClasses * 4 == C1);
     ASSERT(numPriors * param.numClasses == C2);
 
