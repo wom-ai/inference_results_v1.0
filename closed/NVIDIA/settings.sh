@@ -1,9 +1,11 @@
 #DEVICE=GeforceRTX3080Ti
 #DEVICE=GeforceRTX2080Ti
-DEVICE=GeforceGTX1080Ti
 #DEVICE=Xavier
+#DEVICE=GeForceRTX3080LaptopGPUx1
+#DEVICE=GeForceRTX2080Tix1
+DEVICE=GeForceGTX1080Tix1
 
-#MODEL=ssd_mobilenet_v1_coco_2018_01_28
-MODEL=ssd_mobilenet_v2_coco_2018_03_29
+MODEL=ssd_mobilenet_v1_coco_2018_01_28
+#MODEL=ssd_mobilenet_v2_coco_2018_03_29
 #MODEL=ssdlite_mobilenet_v2_coco_2018_05_09
 #MODEL=ssdlite_mobilenet_v2_ball
