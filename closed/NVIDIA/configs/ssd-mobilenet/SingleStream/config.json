@@ -110,7 +110,7 @@
         "tensor_path": "${PREPROCESSED_DATA_DIR}/coco/val2017/SSDMobileNet/int8_chw4",
         "use_direct_host_access": false
     },
-    "GeForceRTX3080x1": {
+    "GeForceRTX3080Laptopx1": {
         "config_ver": {
             "maxq": {}
         },

@@ -276,7 +276,8 @@ class KnownSystems:
                                 valid_mig_slices=[MIGSlice(1, 10), MIGSlice(2, 20), MIGSlice(3, 40)])
     GeForceGTX_1080Ti = SystemClass("GeForceGTX1080Ti", ["GeForce GTX 1080 Ti"], ["1B06"], Architecture.Pascal, [1])
     GeForceRTX_2080Ti = SystemClass("GeForceRTX2080Ti", ["GeForce RTX 2080 Ti"], ["1E04"], Architecture.Turing, [1])
-    GeForceRTX_3080 = SystemClass("GeForceRTX3080", ["GeForce RTX 3080", "NVIDIA GeForce RTX 3080 Laptop GPU"], ["2206", "249C"], Architecture.Ampere, [1])
+    GeForceRTX_3080 = SystemClass("GeForceRTX3080", ["GeForce RTX 3080"], ["2206"], Architecture.Ampere, [1])
+    GeForceRTX_3080Laptop = SystemClass("GeForceRTX3080Laptop", ["NVIDIA GeForce RTX 3080 Laptop GPU"], ["249C"], Architecture.Ampere, [1])
     GeForceRTX_3090 = SystemClass("GeForceRTX3090", ["GeForce RTX 3090", "Quadro RTX A6000", "RTX A6000"],
                                   ["2204", "2230"], Architecture.Ampere, [1])
     A10 = SystemClass("A10", ["A10"], ["2236"], Architecture.Ampere, [1, 8])
