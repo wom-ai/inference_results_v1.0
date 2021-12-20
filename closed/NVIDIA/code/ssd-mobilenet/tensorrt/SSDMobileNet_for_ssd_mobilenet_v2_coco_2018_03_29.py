@@ -198,6 +198,23 @@ PriorBox = gs.create_plugin_node(name="MultipleGridAnchorGenerator", op="GridAnc
                                  aspectRatios=[1.0, 2.0, 0.5, 3.0, 0.33],
                                  variance=[0.1, 0.1, 0.2, 0.2],
                                  featureMapShapes=[19, 10, 5, 3, 2, 1])
+#
+# check NMS's inputOrder
+#
+# input: "BoxPredictor_0/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_1/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_2/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_3/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_4/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_5/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_0/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_1/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_2/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_3/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_4/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_5/BoxEncodingPredictor/BiasAdd"
+# input: "concat_priorbox"
+#
 Postprocessor = gs.create_plugin_node(name="Postprocessor", op="NMS_OPT_TRT",
                                       shareLocation=1,
                                       varianceEncodedInTarget=0,
