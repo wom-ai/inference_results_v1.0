@@ -7,4 +7,5 @@ DEVICE=GeForceRTX3080Laptopx1
 MODEL=ssd_mobilenet_v1_coco_2018_01_28
 #MODEL=ssd_mobilenet_v2_coco_2018_03_29
 #MODEL=ssdlite_mobilenet_v2_coco_2018_05_09
+#MODEL=ssdlite_mobilenet_v3_large_300x300_coco
 #MODEL=ssdlite_mobilenet_v2_ball

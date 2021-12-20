@@ -50,6 +50,8 @@ def get_benchmark(conf):
             SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet_for_ssd_mobilenet_v2_coco_2018_03_29").SSDMobileNet
         elif model_name == 'ssdlite_mobilenet_v2_coco_2018_05_09':
             SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet_for_ssdlite_mobilenet_v2_coco_2018_05_09").SSDMobileNet
+        elif model_name == 'ssdlite_mobilenet_v3_large_300x300_coco':
+            SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet_for_ssdlite_mobilenet_v3_large_300x300_coco").SSDMobileNet
         else:
             SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet").SSDMobileNet
         print("\n##################################################################")
