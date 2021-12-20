@@ -149,7 +149,19 @@ def mergeLocConfConv(network, index):
     merge_bias = np.concatenate((loc_bias_layer.weights, conf_bias_layer.weights), axis=0)
 
     # Build merged conv
-    merged_conv = network.add_convolution(loc_layer.get_input(0), merge_bias.size, (1, 1), merge_kernel, merge_bias)
+    #
+    # check kernel size for ssd_mobilenet_v2_coco_2018_03_29, check tensorboard's graph nodes
+    # fix the following error messages
+    # [TensorRT] ERROR: BoxPredictor_loc_conf_0: kernel weights has count 1477440 but 164160 was expected
+    # [TensorRT] ERROR: BoxPredictor_loc_conf_0: count of 1477440 weights in kernel, but kernel dimensions (1,1) with 576 input channels, 285 output channels and 1 groups were specified. Expected Weights count is 576 * 1*1 * 285 / 1 = 164160
+    #
+#    merged_conv = network.add_convolution(loc_layer.get_input(0), merge_bias.size, (1, 1), merge_kernel, merge_bias)
+    merged_conv = network.add_convolution(loc_layer.get_input(0), merge_bias.size, (3, 3), merge_kernel, merge_bias)
+    #
+    # fix [TensorRT] ERROR: BoxPredictor_loc_conf_4: image size is smaller than filter size
+    #
+    merged_conv.padding_mode=trt.PaddingMode.SAME_UPPER
+
     merged_conv.name = "BoxPredictor_loc_conf_{}".format(index)
     merged_conv.get_output(0).name = merged_conv.name
     return merged_conv.get_output(0)
@@ -166,6 +178,24 @@ PriorBox = gs.create_plugin_node(name="MultipleGridAnchorGenerator", op="GridAnc
                                  aspectRatios=[1.0, 2.0, 0.5, 3.0, 0.33],
                                  variance=[0.1, 0.1, 0.2, 0.2],
                                  featureMapShapes=[19, 10, 5, 3, 2, 1])
+#
+# check NMS's inputOrder
+#
+# input: "BoxPredictor_0/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_1/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_2/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_3/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_4/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_5/BoxEncodingPredictor/BiasAdd"
+# input: "concat_priorbox"
+# input: "BoxPredictor_0/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_1/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_2/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_3/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_4/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_5/ClassPredictor/BiasAdd"
+
+#
 Postprocessor = gs.create_plugin_node(name="Postprocessor", op="NMS_OPT_TRT",
                                       shareLocation=1,
                                       varianceEncodedInTarget=0,
@@ -313,6 +343,9 @@ class SSDMobileNet(BenchmarkBuilder):
         self.network.mark_output(nms_layer.get_output(0))
 
         # Connect NMS input to manually merged convolution layer
+        #
+        # check inputOrder of NMS
+        #
         for i in range(0, 6):
             tensor = mergeLocConfConv(self.network, i)
             nms_layer.set_input(i, tensor)
