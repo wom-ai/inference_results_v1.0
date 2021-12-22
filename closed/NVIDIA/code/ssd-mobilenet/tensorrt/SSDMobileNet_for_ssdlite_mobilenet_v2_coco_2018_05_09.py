@@ -139,8 +139,17 @@ def mergeLocConfConv(network, index):
     conf_layer.__class__ = trt.IConvolutionLayer
     loc_kernel = loc_layer.kernel.reshape(loc_layer.num_output_maps, -1)
     conf_kernel = conf_layer.kernel.reshape(conf_layer.num_output_maps, -1)
-    merge_kernel = np.concatenate((loc_kernel, conf_kernel), axis=0)
 
+    print("loc_layer.get_input(0).shape={}".format(loc_layer.get_input(0).shape))
+    print("loc_kernel.shape={}".format(loc_kernel.shape))
+    print("conf_kernel.shape={}".format(conf_kernel.shape))
+    merge_kernel = np.concatenate((loc_kernel, conf_kernel), axis=0)
+    print("merge_kernel.shape={}".format(merge_kernel.shape))
+
+    print("loc_layer.kernel.shape={}".format(loc_layer.kernel.shape))
+    print("loc_layer.num_output_maps={}".format(loc_layer.num_output_maps))
+    print("conf_layer.kernel.shape={}".format(conf_layer.kernel.shape))
+    print("conf_layer.num_output_maps={}".format(conf_layer.num_output_maps))
     # Concat bias
     loc_bias_layer = network.get_layer(loc_bias_id)
     conf_bias_layer = network.get_layer(conf_bias_id)
@@ -154,6 +163,31 @@ def mergeLocConfConv(network, index):
     merged_conv.get_output(0).name = merged_conv.name
     return merged_conv.get_output(0)
 
+def mergeLocConfConcat(network, index):
+    loc_bias_name = "BoxPredictor_{}/BoxEncodingPredictor/BiasAdd".format(index)
+    conf_bias_name = "BoxPredictor_{}/ClassPredictor/BiasAdd".format(index)
+
+    # Find target layers to merge
+    loc_bias_id = -1
+    conf_bias_id = -1
+
+    nb_layers = network.num_layers
+    for i in range(nb_layers):
+        layer = network.get_layer(i)
+        if loc_bias_name in layer.name:
+            loc_bias_id = i
+        elif conf_bias_name in layer.name:
+            conf_bias_id = i
+    assert loc_bias_id != -1 and conf_bias_id != -1
+
+    # Concat bias
+    loc_bias_layer = network.get_layer(loc_bias_id)
+    conf_bias_layer = network.get_layer(conf_bias_id)
+
+    merged_conv = network.add_concatenation([loc_bias_layer.get_output(0), conf_bias_layer.get_output(0)])
+    merged_conv.name = "BoxPredictor_loc_conf_{}".format(index)
+    merged_conv.get_output(0).name = merged_conv.name
+    return merged_conv.get_output(0)
 
 Input = gs.create_node("Input",
                        op="Placeholder",
@@ -166,6 +200,23 @@ PriorBox = gs.create_plugin_node(name="MultipleGridAnchorGenerator", op="GridAnc
                                  aspectRatios=[1.0, 2.0, 0.5, 3.0, 0.33],
                                  variance=[0.1, 0.1, 0.2, 0.2],
                                  featureMapShapes=[19, 10, 5, 3, 2, 1])
+#
+# check NMS's inputOrder
+#
+# input: "BoxPredictor_0/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_1/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_2/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_3/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_4/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_5/BoxEncodingPredictor/BiasAdd"
+# input: "BoxPredictor_0/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_1/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_2/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_3/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_4/ClassPredictor/BiasAdd"
+# input: "BoxPredictor_5/ClassPredictor/BiasAdd"
+# input: "concat_priorbox"
+#
 Postprocessor = gs.create_plugin_node(name="Postprocessor", op="NMS_OPT_TRT",
                                       shareLocation=1,
                                       varianceEncodedInTarget=0,
@@ -175,7 +226,8 @@ Postprocessor = gs.create_plugin_node(name="Postprocessor", op="NMS_OPT_TRT",
                                       topK=100,
                                       keepTopK=100,
                                       numClasses=91,
-                                      inputOrder=[0, 7, 6],
+                                      #inputOrder=[0, 7, 6],
+                                      inputOrder=[0, 6, 12],
                                       confSigmoid=1,
                                       confSoftmax=0,
                                       isNormalized=1,
@@ -218,8 +270,38 @@ def preprocess(dynamic_graph):
     # Disconnect concat/axis and concat_1/axis from NMS.
     dynamic_graph.find_nodes_by_op("NMS_OPT_TRT")[0].input.remove("concat/axis")
     dynamic_graph.find_nodes_by_op("NMS_OPT_TRT")[0].input.remove("concat_1/axis")
-    dynamic_graph.find_nodes_by_name("Input")[0].input.remove("image_tensor:0")
 
+    #
+    # references
+    #   - https://docs.nvidia.com/deeplearning/tensorrt/archives/tensorrt-723/api/python_api/graphsurgeon/graphsurgeon.html
+    #
+
+    #dynamic_graph.append(concat_priorbox)
+    #dynamic_graph.append(const_node)
+    dynamic_graph.find_nodes_by_name("concat_priorbox")[0].input.append("MultipleGridAnchorGenerator")
+    dynamic_graph.find_nodes_by_name("Postprocessor")[0].input.append("concat_priorbox")
+    #dynamic_graph.find_nodes_by_name("MultipleGridAnchorGenerator")[0].input.append("Const")
+
+#    print("########################################")
+#    for node in dynamic_graph:
+#        print(node.name)
+#        for in_node in node.input:
+#            print("\t\t+- {}".format(in_node))
+#
+#        if node.name == 'Const':
+#            print("----------------------------------------")
+#            print(node)
+#            print("----------------------------------------")
+#    print("########################################")
+
+#    print('=======================================================================')
+#    print("MultipleGridAnchorGenerator: ", dynamic_graph.find_nodes_by_name("MultipleGridAnchorGenerator"))
+#    print('=======================================================================')
+#    print("concat_priorbox: ", dynamic_graph.find_nodes_by_name("concat_priorbox"))
+#    print('=======================================================================')
+#    print("NMS_OPT_TRT: ", dynamic_graph.find_nodes_by_name("Postprocessor"))
+
+#    dynamic_graph.find_nodes_by_name("Input")[0].input.remove("image_tensor:0")
 
 class SSDMobileNet(BenchmarkBuilder):
 
@@ -313,7 +395,21 @@ class SSDMobileNet(BenchmarkBuilder):
         self.network.mark_output(nms_layer.get_output(0))
 
         # Connect NMS input to manually merged convolution layer
+        #
+        # check NMS's inputOrder
+        #
         for i in range(0, 6):
-            tensor = mergeLocConfConv(self.network, i)
+            tensor = mergeLocConfConcat(self.network, i)
             nms_layer.set_input(i, tensor)
-            nms_layer.set_input(i + 7, tensor)
+            nms_layer.set_input(i + 6, tensor)
+
+#        for i in range(nms_layer.num_inputs):
+#            print("[{}]".format(nms_layer.get_input(i).name))
+#            print("  +- shape={}".format(nms_layer.get_input(i).shape))
+#        for i in range(nb_layers):
+#            layer = self.network.get_layer(i)
+#            print("({:}) Layer '{:}' -> Type: {:} ON {:}".format(i, layer.name, layer.type,
+#                                                                         self.builder_config.get_device_type(layer)))
+#            for j in range(layer.num_inputs):
+#                tensor = layer.get_input(j)
+#                print("\t+-{}({})".format(tensor.name, tensor.shape))
