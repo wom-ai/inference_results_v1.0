@@ -1,0 +1,122 @@
+[2021-12-30 08:49:27,117 __init__.py:255 INFO] Running command: CUDA_VISIBILE_ORDER=PCI_BUS_ID nvidia-smi --query-gpu=gpu_name,pci.device_id,uuid --format=csv
+[2021-12-30 08:49:27,126 main.py:701 INFO] Detected System ID: GeForceRTX3080Laptopx1
+[2021-12-30 08:49:27,130 main.py:529 INFO] Using config files: configs/ssd-mobilenet/SingleStream/config.json
+[2021-12-30 08:49:27,130 __init__.py:341 INFO] Parsing config file configs/ssd-mobilenet/SingleStream/config.json ...
+[2021-12-30 08:49:27,130 main.py:542 INFO] Processing config "GeForceRTX3080Laptopx1_ssd-mobilenet_SingleStream"
+[2021-12-30 08:49:27,130 main.py:224 INFO] Running harness for ssd-mobilenet benchmark in SingleStream scenario...
+[2021-12-30 08:49:27,133 __init__.py:255 INFO] Running command: ./build/bin/harness_default --plugins="build/plugins/NMSOptPlugin/libnmsoptplugin.so" --logfile_outdir="/work/inference_results_v1.0/closed/NVIDIA/build/logs/2021.12.30-08.49.26/GeForceRTX3080Laptopx1_TRT/ssd-mobilenet/SingleStream" --logfile_prefix="mlperf_log_" --performance_sample_count=1024 --test_mode="PerformanceOnly" --gpu_copy_streams=1 --gpu_inference_streams=1 --use_direct_host_access=false --gpu_batch_size=1 --map_path="data_maps/coco/val_map.txt" --tensor_path="${PREPROCESSED_DATA_DIR}/coco/val2017/SSDMobileNet/int8_chw4" --use_graphs=true --single_stream_expected_latency_ns=300000 --gpu_engines="./build/engines/GeForceRTX3080Laptopx1/ssd-mobilenet/SingleStream/ssd-mobilenet-SingleStream-gpu-b1-int8.default.plan" --mlperf_conf_path="measurements/GeForceRTX3080Laptopx1_TRT/ssd-mobilenet/SingleStream/mlperf.conf" --user_conf_path="measurements/GeForceRTX3080Laptopx1_TRT/ssd-mobilenet/SingleStream/user.conf" --max_dlas=0 --scenario SingleStream --model ssd-mobilenet --response_postprocess coco
+[2021-12-30 08:49:27,133 __init__.py:261 INFO] Overriding Environment
+gpu_batch_size : 1
+gpu_copy_streams : 1
+gpu_inference_streams : 1
+input_dtype : int8
+map_path : data_maps/coco/val_map.txt
+precision : int8
+use_graphs : True
+config_ver : default
+gpu_single_stream_expected_latency_ns : 300000
+input_format : chw4
+tensor_path : ${PREPROCESSED_DATA_DIR}/coco/val2017/SSDMobileNet/int8_chw4
+use_direct_host_access : False
+system_id : GeForceRTX3080Laptopx1
+scenario : SingleStream
+benchmark : ssd-mobilenet
+config_name : GeForceRTX3080Laptopx1_ssd-mobilenet_SingleStream
+accuracy_level : 99%
+optimization_level : plugin-enabled
+inference_server : lwis
+system_name : None
+test_mode : PerformanceOnly
+gpu_num_bundles : 2
+log_dir : /work/inference_results_v1.0/closed/NVIDIA/build/logs/2021.12.30-08.49.26
+&&&& RUNNING Default_Harness # ./build/bin/harness_default
+[I] mlperf.conf path: measurements/GeForceRTX3080Laptopx1_TRT/ssd-mobilenet/SingleStream/mlperf.conf
+[I] user.conf path: measurements/GeForceRTX3080Laptopx1_TRT/ssd-mobilenet/SingleStream/user.conf
+Creating QSL.
+Finished Creating QSL.
+Setting up SUT.
+[I] Device:0: ./build/engines/GeForceRTX3080Laptopx1/ssd-mobilenet/SingleStream/ssd-mobilenet-SingleStream-gpu-b1-int8.default.plan has been successfully loaded.
+[I] Start creating CUDA graphs
+[I] Capture 1 CUDA graphs
+[I] Finish creating CUDA graphs
+[I] Creating batcher thread: 0 EnableBatcherThreadPerDevice: false
+Finished setting up SUT.
+Starting warmup. Running for a minimum of 5 seconds.
+Finished warmup. Ran for 5.02449s.
+Starting running actual test.
+================================================
+MLPerf Results Summary
+================================================
+SUT name : LWIS_Server
+Scenario : SingleStream
+Mode     : PerformanceOnly
+90th percentile latency (ns) : 500427
+Result is : VALID
+  Min duration satisfied : Yes
+  Min queries satisfied : Yes
+
+================================================
+Additional Stats
+================================================
+QPS w/ loadgen overhead         : 1998.16
+QPS w/o loadgen overhead        : 2033.93
+
+Min latency (ns)                : 446549
+Max latency (ns)                : 9320921
+Mean latency (ns)               : 491660
+50.00 percentile latency (ns)   : 491829
+90.00 percentile latency (ns)   : 500427
+95.00 percentile latency (ns)   : 503358
+97.00 percentile latency (ns)   : 505586
+99.00 percentile latency (ns)   : 511260
+99.90 percentile latency (ns)   : 622225
+
+================================================
+Test Parameters Used
+================================================
+samples_per_query : 1
+target_qps : 3333.33
+target_latency (ns): 0
+max_async_queries : 1
+min_duration (ms): 600000
+max_duration (ms): 0
+min_query_count : 1024
+max_query_count : 0
+qsl_rng_seed : 7322528924094909334
+sample_index_rng_seed : 1570999273408051088
+schedule_rng_seed : 3507442325620259414
+accuracy_log_rng_seed : 0
+accuracy_log_probability : 0
+accuracy_log_sampling_target : 0
+print_timestamps : 0
+performance_issue_unique : 0
+performance_issue_same : 0
+performance_issue_same_index : 0
+performance_sample_count : 1024
+
+No warnings encountered during test.
+
+No errors encountered during test.
+Finished running actual test.
+Device Device:0 processed:
+  1198898 batches of size 1
+  Memcpy Calls: 0
+  PerSampleCudaMemcpy Calls: 0
+  BatchedCudaMemcpy Calls: 1198898
+&&&& PASSED Default_Harness # ./build/bin/harness_default
+[2021-12-30 08:59:36,433 main.py:280 INFO] Result: result_90.00_percentile_latency_ns: 500427, Result is VALID
+[2021-12-30 08:59:36,434 main.py:573 WARNING] --config_ver=high_accuracy does not exist in config file 'GeForceRTX3080Laptopx1_ssd-mobilenet_SingleStream'
+
+======================= Perf harness results: =======================
+
+GeForceRTX3080Laptopx1_TRT-default-SingleStream:
+    ssd-mobilenet: result_90.00_percentile_latency_ns: 500427, Result is VALID
+
+
+======================= Accuracy results: =======================
+
+GeForceRTX3080Laptopx1_TRT-default-SingleStream:
+    ssd-mobilenet: No accuracy results in PerformanceOnly mode.
+
+Hostname: wom-laptop
+Elapsed Time: 610 seconds
