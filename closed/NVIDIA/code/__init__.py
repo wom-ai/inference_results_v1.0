@@ -44,7 +44,7 @@ def get_benchmark(conf):
         else:
             print("Model Name is not set up. Use default ssd_mobilenet_v1_coco_2018_01_28")
 
-        if model_name == 'ssdlite_mobilenet_v2_ball':
+        if 'ssdlite_mobilenet_v2_ball' in model_name:
             SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet_for_ssdlite_mobilenet_v2_ball").SSDMobileNet
         elif model_name == 'ssd_mobilenet_v2_coco_2018_03_29':
             SSDMobileNet = import_module("code.ssd-mobilenet.tensorrt.SSDMobileNet_for_ssd_mobilenet_v2_coco_2018_03_29").SSDMobileNet

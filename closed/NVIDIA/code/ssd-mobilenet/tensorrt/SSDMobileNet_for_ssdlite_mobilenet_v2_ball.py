@@ -295,7 +295,8 @@ class SSDMobileNet(BenchmarkBuilder):
         super().__init__(args, name="ssd-mobilenet", workspace_size=workspace_size)
 
         # Model path
-        self.model_path = dict_get(args, "model_path", default="build/models/frozen_model_ssdlite_mobilenet_v2_ball_2020_02_26/frozen_inference_graph.pb")
+        model_name = os.environ.get('MODEL', None)
+        self.model_path = dict_get(args, "model_path", default="build/models/frozen_model_{}/frozen_inference_graph.pb".format(model_name))
 
         if self.precision == "int8":
             calib_batch_size = dict_get(self.args, "calib_batch_size", default=1)
