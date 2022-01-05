@@ -158,7 +158,31 @@ def mergeLocConfConv(network, index):
     merged_conv.get_output(0).name = merged_conv.name
     return merged_conv.get_output(0)
 
-trt.Logger(trt.Logger.VERBOSE)
+def mergeLocConfConcat(network, index):
+    loc_bias_name = "BoxPredictor_{}/BoxEncodingPredictor/BiasAdd".format(index)
+    conf_bias_name = "BoxPredictor_{}/ClassPredictor/BiasAdd".format(index)
+
+    # Find target layers to merge
+    loc_bias_id = -1
+    conf_bias_id = -1
+
+    nb_layers = network.num_layers
+    for i in range(nb_layers):
+        layer = network.get_layer(i)
+        if loc_bias_name in layer.name:
+            loc_bias_id = i
+        elif conf_bias_name in layer.name:
+            conf_bias_id = i
+    assert loc_bias_id != -1 and conf_bias_id != -1
+
+    # Concat bias
+    loc_bias_layer = network.get_layer(loc_bias_id)
+    conf_bias_layer = network.get_layer(conf_bias_id)
+
+    merged_conv = network.add_concatenation([loc_bias_layer.get_output(0), conf_bias_layer.get_output(0)])
+    merged_conv.name = "BoxPredictor_loc_conf_{}".format(index)
+    merged_conv.get_output(0).name = merged_conv.name
+    return merged_conv.get_output(0)
 
 Input = gs.create_node("Input",
                        op="Placeholder",
@@ -383,6 +407,6 @@ class SSDMobileNet(BenchmarkBuilder):
         # check NMS's inputOrder
         #
         for i in range(0, 6):
-            tensor = mergeLocConfConv(self.network, i)
+            tensor = mergeLocConfConcat(self.network, i)
             nms_layer.set_input(i + 1, tensor)
             nms_layer.set_input(i + 7, tensor)
